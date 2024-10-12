@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Center vertically */
+        margin: 0; /* Remove default margin */
+        background-color: #f4f4f4; /* Light background for contrast */
+      }
+
+      .card {
+        width: 100%;
+        max-width: 400px; /* Maximum width for larger screens */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column; /* Arrange children vertically */
+      }
+
+      .chat-header {
+        background-color: #333;
+        color: #fff;
+        padding: 10px;
+        font-size: 18px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        text-align: center; /* Center header text */
+      }
+
+      .chat-window {
+        height: 220px;
+      }
+
+      .message-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .chat-input {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+      }
+
+      .message-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 10px; /* Increase padding for better appearance */
+        font-size: 14px;
+        width: 100%; /* Full width of the container */
+        box-sizing: border-box; /* Include padding in width */
+        border-radius: 4px; /* Add slight rounding */
+      }
+
+      .send-button {
+        border: none;
+        outline: none;
+        background-color: #333;
+        color: #fff;
+        font-size: 14px;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px; /* Add slight rounding */
+        margin-left: 10px; /* Space between input and button */
+      }
+
+      .send-button:hover {
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+        box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+      }
+
+      @media (max-width: 500px) {
+        .card {
+          width: 90%; /* Full width on small screens */
+        }
+
+        .message-input {
+          padding: 8px; /* Adjust padding for small screens */
+        }
+
+        .send-button {
+          padding: 4px 8px; /* Adjust button size */
+        }
+      }
+    </style>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div class="card">
+      <div class="chat-header">Chat</div>
+      <div class="chat-window">
+        <textarea
+          class="message-input"
+          id="message"
+          placeholder="Type your message here"
+          rows="11"
+          cols="100"
+          style="resize: none"
+        ></textarea>
+      </div>
+      <div class="chat-input">
+        <button class="send-button" onclick="sendTelegram()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      let bot = {
+        token: "7708047628:AAHI1do22XLibUDYt1jy7aTjBy5mZrhyocw",
+        chat_id: "-1002463170992"
+      };
+
+      function sendTelegram() {
+        let message = document.getElementById("message").value;
+        if (!message.trim()) {
+          Swal.fire({
+            icon: "warning",
+            title: "Message cannot be empty!",
+          });
+          return;
+        }
+
+        let url = `https://api.telegram.org/bot${bot.token}/sendMessage?chat_id=${bot.chat_id}&text=${encodeURIComponent(
+          message
+        )}`;
+
+        const xml = new XMLHttpRequest();
+        xml.open("GET", url);
+        xml.onload = function () {
+          if (xml.status === 200) {
+            Swal.fire({
+              icon: "success",
+              title: "Message Sent",
+              text: "Berhasil Mengirim Pesan!",
+            });
+            document.getElementById("message").value = ""; // Clear the textarea
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Message Failed",
+              text: "Terjadi Kesalahan Dalam Mengirim Pesan. Tolong Coba Kembali."
+            });
+          }
+        };
+        xml.onerror = function () {
+          Swal.fire({
+            icon: "error",
+            title: "Network Error",
+            text: "Tolong Periksa Koneksi And.",
+          });
+        };
+        xml.send();
+      }
+    </script>
+  </body>
+</html>
